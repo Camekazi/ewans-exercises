@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#B91C1C">
+    <title>Ewan's Strength Training</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <style>
+        :root {
+            --bg-primary: #111827;
+            --bg-secondary: #1F2937;
+            --bg-card: #374151;
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --text-muted: #6B7280;
+            --accent-red: #B91C1C;
+            --accent-red-light: #DC2626;
+            --accent-emerald: #059669;
+            --accent-emerald-light: #10B981;
+            --accent-blue: #2563EB;
+            --accent-orange: #D97706;
+            --accent-purple: #7C3AED;
+            --border-color: #4B5563;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --radius: 12px;
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: var(--safe-top) 16px var(--safe-bottom);
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 24px 0 16px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .session-timer {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .session-timer.active {
+            color: var(--accent-emerald-light);
+        }
+
+        .timer-controls {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .timer-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .timer-btn.start {
+            background: var(--accent-emerald);
+            color: white;
+        }
+
+        .timer-btn.stop {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .timer-btn.reset {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .section {
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--bg-secondary);
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: var(--bg-card);
+        }
+
+        .section-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .section.warm-up .section-icon { background: var(--accent-blue); }
+        .section.lower-body .section-icon { background: var(--accent-red); }
+        .section.upper-body .section-icon { background: var(--accent-orange); }
+        .section.cool-down .section-icon { background: var(--accent-purple); }
+
+        .section-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-progress {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .section-progress.complete {
+            color: var(--accent-emerald-light);
+        }
+
+        .chevron {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .section.collapsed .chevron {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            max-height: 2000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section.collapsed .section-content {
+            max-height: 0;
+        }
+
+        .exercise-card {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .exercise-card.completed {
+            opacity: 0.6;
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .exercise-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .exercise-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .exercise-weight {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .weight-input {
+            width: 60px;
+            padding: 6px 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .weight-unit {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .exercise-illustration {
+            width: 100%;
+            max-width: 200px;
+            margin: 12px auto;
+            display: block;
+        }
+
+        .exercise-illustration svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .exercise-instructions {
+            margin-bottom: 16px;
+        }
+
+        .exercise-instructions li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            margin-left: 20px;
+        }
+
+        .sets-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .set-box {
+            width: 48px;
+            height: 48px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-card);
+        }
+
+        .set-box:hover {
+            border-color: var(--text-muted);
+        }
+
+        .set-box.completed {
+            background: var(--accent-emerald);
+            border-color: var(--accent-emerald);
+        }
+
+        .set-box .set-number {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .set-box.completed .set-number {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .set-box .set-check {
+            font-size: 1.2rem;
+            opacity: 0;
+        }
+
+        .set-box.completed .set-check {
+            opacity: 1;
+        }
+
+        .exercise-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rest-timer {
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .rest-timer.active {
+            display: block;
+        }
+
+        .rest-timer-display {
+            font-size: 2rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--accent-emerald-light);
+        }
+
+        .rest-timer-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .rest-timer-btn {
+            margin-top: 8px;
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            background: var(--border-color);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .warm-up-item, .cool-down-item {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .item-checkbox.checked {
+            background: var(--accent-emerald);
+            border-color: var(--accent-emerald);
+        }
+
+        .item-checkbox svg {
+            width: 14px;
+            height: 14px;
+            opacity: 0;
+            color: white;
+        }
+
+        .item-checkbox.checked svg {
+            opacity: 1;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .item-duration {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .next-exercise {
+            position: fixed;
+            bottom: calc(20px + var(--safe-bottom));
+            left: 16px;
+            right: 16px;
+            background: var(--accent-red);
+            color: white;
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            display: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .next-exercise:active {
+            transform: scale(0.98);
+        }
+
+        .next-exercise.visible {
+            display: block;
+        }
+
+        .next-exercise-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+
+        .next-exercise-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .reset-section {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .alt-exercise-note {
+            font-size: 0.8rem;
+            color: var(--accent-orange);
+            font-style: italic;
+            margin-top: 8px;
+            padding: 8px;
+            background: rgba(217, 119, 6, 0.1);
+            border-radius: 6px;
+        }
+
+        .progression-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            background: var(--accent-emerald);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Reduce motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ewan's Strength Training</h1>
+        <div class="session-timer" id="sessionTimer">Session: 00:00</div>
+        <div class="timer-controls">
+            <button class="timer-btn start" id="startTimer" onclick="toggleSessionTimer()">Start</button>
+            <button class="timer-btn reset" onclick="resetSessionTimer()">Reset</button>
+        </div>
+    </header>
+
+    <main id="app"></main>
+
+    <div class="next-exercise" id="nextExercise" onclick="scrollToNextExercise()">
+        <div class="next-exercise-label">Next up</div>
+        <div class="next-exercise-name" id="nextExerciseName"></div>
+    </div>
+
+    <footer>
+        <p>Built with gains in mind</p>
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const warmUpItems = [
+            { id: 'cardio', name: 'Gentle Cardio', duration: '3-4 minutes', notes: 'Light jog, jumping jacks, or rowing' },
+            { id: 'mobility', name: 'Mobility Exercises', duration: '3-4 minutes', notes: 'Hip circles, arm circles, leg swings' },
+            { id: 'dynamic-stretch', name: 'Dynamic Stretching', duration: '3-4 minutes', notes: 'Walking lunges, high knees, butt kicks' }
+        ];
+
+        const exercises = [
+            {
+                id: 'deadlift',
+                name: 'Barbell Back Lifts (Deadlifts)',
+                section: 'lower-body',
+                sets: 4,
+                reps: '8-12',
+                defaultWeight: 50,
+                targetWeight: 65,
+                restSeconds: 120,
+                instructions: [
+                    'Stand with feet hip-width apart, bar over mid-foot',
+                    'Hinge at hips, grip bar just outside knees',
+                    'Brace core, flat back, chest up',
+                    'Drive through heels, extend hips and knees together',
+                    'Lock out at top, squeeze glutes',
+                    'Control descent, touch floor, repeat'
+                ],
+                notes: 'Progress to 65kg over 8-12 weeks'
+            },
+            {
+                id: 'reverse-lunge',
+                name: 'Reverse Lunges',
+                section: 'lower-body',
+                sets: 4,
+                reps: '8-12 per leg',
+                defaultWeight: 20,
+                restSeconds: 90,
+                instructions: [
+                    'Stand with dumbbells at sides',
+                    'Step back with one leg, lower knee toward floor',
+                    'Front knee tracks over toes',
+                    'Push through front heel to return',
+                    'Alternate legs'
+                ],
+                notes: '2 x 10kg dumbbells'
+            },
+            {
+                id: 'step-up',
+                name: 'Step Ups (Deadleg)',
+                section: 'lower-body',
+                sets: 4,
+                reps: '8-12 per leg',
+                defaultWeight: 20,
+                restSeconds: 90,
+                instructions: [
+                    'Stand facing box, dumbbells hanging at sides',
+                    'Place entire foot on box',
+                    'Drive through heel without pushing off back leg',
+                    'Control descent, tap floor with back foot',
+                    'Complete all reps on one leg before switching'
+                ],
+                notes: '2 x 10kg dumbbells',
+                alternative: 'Low Box Explosive Step Ups: Bodyweight, focus on speed and explosive arm drive'
+            },
+            {
+                id: 'pushup',
+                name: 'Push-ups',
+                section: 'upper-body',
+                sets: 3,
+                reps: '8-12',
+                defaultWeight: 0,
+                restSeconds: 60,
+                instructions: [
+                    'Hands slightly wider than shoulders',
+                    'Body in straight line from head to heels',
+                    'Lower chest to floor, elbows at 45°',
+                    'Push back up to full extension'
+                ],
+                alternative: 'Kettlebell Rows: 30kg, 3 x 8-12 per side'
+            }
+        ];
+
+        const coolDownItems = [
+            { id: 'cool-cardio', name: 'Gentle Cardio', duration: '3-4 minutes', notes: 'Walking, very light movement' },
+            { id: 'static-stretch', name: 'Static Stretching', duration: '6-7 minutes', notes: 'Hold each stretch 30-60 seconds' }
+        ];
+
+        // ========== STATE ==========
+        let state = {
+            warmUp: {},
+            setsCompleted: {},
+            weights: {},
+            coolDown: {},
+            collapsed: {},
+            sessionStart: null,
+            sessionElapsed: 0,
+            activeRestTimer: null
+        };
+
+        let sessionTimerInterval = null;
+        let restTimerInterval = null;
+
+        // ========== SVG ICONS ==========
+        const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        const chevronIcon = `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+
+        // ========== EXERCISE ILLUSTRATIONS ==========
+        const exerciseSvgs = {
+            'deadlift': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Barbell -->
+                <line x1="40" y1="120" x2="160" y2="120"/>
+                <circle cx="45" cy="120" r="12"/>
+                <circle cx="155" cy="120" r="12"/>
+                <!-- Stickman - hinged position -->
+                <circle cx="100" cy="50" r="12"/> <!-- Head -->
+                <line x1="100" y1="62" x2="100" y2="90"/> <!-- Torso angled -->
+                <line x1="100" y1="90" x2="85" y2="115"/> <!-- Left leg -->
+                <line x1="100" y1="90" x2="115" y2="115"/> <!-- Right leg -->
+                <line x1="100" y1="70" x2="80" y2="100"/> <!-- Left arm to bar -->
+                <line x1="100" y1="70" x2="120" y2="100"/> <!-- Right arm to bar -->
+            </svg>`,
+            'reverse-lunge': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Stickman in lunge -->
+                <circle cx="100" cy="30" r="12"/> <!-- Head -->
+                <line x1="100" y1="42" x2="100" y2="80"/> <!-- Torso -->
+                <line x1="100" y1="80" x2="80" y2="120"/> <!-- Front leg -->
+                <line x1="100" y1="80" x2="130" y2="130"/> <!-- Back leg -->
+                <line x1="130" y1="130" x2="130" y2="140"/> <!-- Back knee down -->
+                <!-- Dumbbells -->
+                <line x1="100" y1="55" x2="75" y2="80"/> <!-- Left arm -->
+                <line x1="100" y1="55" x2="125" y2="80"/> <!-- Right arm -->
+                <rect x="70" y="75" width="10" height="20" rx="2"/>
+                <rect x="120" y="75" width="10" height="20" rx="2"/>
+            </svg>`,
+            'step-up': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Box -->
+                <rect x="80" y="100" width="60" height="40" rx="4"/>
+                <!-- Stickman stepping up -->
+                <circle cx="110" cy="40" r="12"/> <!-- Head -->
+                <line x1="110" y1="52" x2="110" y2="85"/> <!-- Torso -->
+                <line x1="110" y1="85" x2="110" y2="100"/> <!-- Front leg on box -->
+                <line x1="110" y1="85" x2="90" y2="140"/> <!-- Back leg -->
+                <!-- Dumbbells -->
+                <line x1="110" y1="60" x2="90" y2="85"/>
+                <line x1="110" y1="60" x2="130" y2="85"/>
+                <rect x="85" y="80" width="8" height="16" rx="2"/>
+                <rect x="127" y="80" width="8" height="16" rx="2"/>
+            </svg>`,
+            'pushup': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- Stickman in pushup position -->
+                <circle cx="50" cy="70" r="12"/> <!-- Head -->
+                <line x1="62" y1="70" x2="150" y2="80"/> <!-- Torso horizontal -->
+                <line x1="150" y1="80" x2="170" y2="120"/> <!-- Legs -->
+                <line x1="70" y1="75" x2="70" y2="120"/> <!-- Left arm down -->
+                <line x1="100" y1="78" x2="100" y2="120"/> <!-- Right arm down -->
+                <!-- Ground -->
+                <line x1="30" y1="120" x2="180" y2="120"/>
+            </svg>`
+        };
+
+        // ========== PERSISTENCE ==========
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('ewans-exercises-state');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    state = { ...state, ...parsed };
+                }
+            } catch (e) {
+                console.warn('Could not load state:', e);
+            }
+        }
+
+        let saveTimeout;
+        function saveState() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                try {
+                    localStorage.setItem('ewans-exercises-state', JSON.stringify(state));
+                } catch (e) {
+                    console.warn('Could not save state:', e);
+                }
+            }, 300);
+        }
+
+        // ========== SESSION TIMER ==========
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateSessionTimerDisplay() {
+            const display = document.getElementById('sessionTimer');
+            display.textContent = `Session: ${formatTime(state.sessionElapsed)}`;
+        }
+
+        function toggleSessionTimer() {
+            const btn = document.getElementById('startTimer');
+            const display = document.getElementById('sessionTimer');
+
+            if (sessionTimerInterval) {
+                clearInterval(sessionTimerInterval);
+                sessionTimerInterval = null;
+                btn.textContent = 'Resume';
+                btn.className = 'timer-btn start';
+                display.classList.remove('active');
+            } else {
+                if (!state.sessionStart) {
+                    state.sessionStart = Date.now();
+                }
+                sessionTimerInterval = setInterval(() => {
+                    state.sessionElapsed++;
+                    updateSessionTimerDisplay();
+                    saveState();
+                }, 1000);
+                btn.textContent = 'Pause';
+                btn.className = 'timer-btn stop';
+                display.classList.add('active');
+            }
+        }
+
+        function resetSessionTimer() {
+            clearInterval(sessionTimerInterval);
+            sessionTimerInterval = null;
+            state.sessionStart = null;
+            state.sessionElapsed = 0;
+            updateSessionTimerDisplay();
+            const btn = document.getElementById('startTimer');
+            btn.textContent = 'Start';
+            btn.className = 'timer-btn start';
+            document.getElementById('sessionTimer').classList.remove('active');
+            saveState();
+        }
+
+        // ========== REST TIMER ==========
+        function startRestTimer(exerciseId, seconds) {
+            clearInterval(restTimerInterval);
+            state.activeRestTimer = { exerciseId, remaining: seconds };
+
+            const timerEl = document.getElementById(`rest-${exerciseId}`);
+            const displayEl = document.getElementById(`rest-display-${exerciseId}`);
+
+            if (timerEl) {
+                timerEl.classList.add('active');
+                displayEl.textContent = formatTime(seconds);
+
+                restTimerInterval = setInterval(() => {
+                    state.activeRestTimer.remaining--;
+                    displayEl.textContent = formatTime(state.activeRestTimer.remaining);
+
+                    if (state.activeRestTimer.remaining <= 0) {
+                        clearInterval(restTimerInterval);
+                        timerEl.classList.remove('active');
+                        state.activeRestTimer = null;
+                        // Vibrate if supported
+                        if (navigator.vibrate) {
+                            navigator.vibrate([200, 100, 200]);
+                        }
+                    }
+                }, 1000);
+            }
+        }
+
+        function skipRestTimer(exerciseId) {
+            clearInterval(restTimerInterval);
+            const timerEl = document.getElementById(`rest-${exerciseId}`);
+            if (timerEl) {
+                timerEl.classList.remove('active');
+            }
+            state.activeRestTimer = null;
+        }
+
+        // ========== RENDERING ==========
+        function render() {
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                ${renderSection('warm-up', 'Warm-up', '10 min', renderWarmUp())}
+                ${renderSection('lower-body', 'Lower Body', '30 min', renderExercises('lower-body'))}
+                ${renderSection('upper-body', 'Upper Body Push', '10 min', renderExercises('upper-body'))}
+                ${renderSection('cool-down', 'Cool Down', '10 min', renderCoolDown())}
+            `;
+            updateNextExercise();
+            updateSessionTimerDisplay();
+        }
+
+        function renderSection(id, title, duration, content) {
+            const isCollapsed = state.collapsed[id];
+            const progress = getSectionProgress(id);
+            const progressClass = progress.completed === progress.total ? 'complete' : '';
+
+            const icons = {
+                'warm-up': '🔥',
+                'lower-body': '🦵',
+                'upper-body': '💪',
+                'cool-down': '🧘'
+            };
+
+            return `
+                <div class="section ${id} ${isCollapsed ? 'collapsed' : ''}" data-section="${id}">
+                    <div class="section-header" onclick="toggleSection('${id}')">
+                        <h2>
+                            <span class="section-icon">${icons[id]}</span>
+                            ${title}
+                            <span style="font-weight: 400; font-size: 0.85rem; color: var(--text-secondary)">${duration}</span>
+                        </h2>
+                        <div class="section-meta">
+                            <span class="section-progress ${progressClass}">${progress.completed}/${progress.total}</span>
+                            ${chevronIcon}
+                        </div>
+                    </div>
+                    <div class="section-content">
+                        ${content}
+                        <div class="reset-section">
+                            <button class="reset-btn" onclick="resetSection('${id}')">Reset ${title}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderWarmUp() {
+            return warmUpItems.map(item => {
+                const isChecked = state.warmUp[item.id];
+                return `
+                    <div class="warm-up-item">
+                        <div class="item-checkbox ${isChecked ? 'checked' : ''}" onclick="toggleWarmUp('${item.id}')">
+                            ${checkIcon}
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">${item.name}</div>
+                            <div class="item-duration">${item.duration} - ${item.notes}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderCoolDown() {
+            return coolDownItems.map(item => {
+                const isChecked = state.coolDown[item.id];
+                return `
+                    <div class="cool-down-item">
+                        <div class="item-checkbox ${isChecked ? 'checked' : ''}" onclick="toggleCoolDown('${item.id}')">
+                            ${checkIcon}
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">${item.name}</div>
+                            <div class="item-duration">${item.duration} - ${item.notes}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderExercises(section) {
+            return exercises
+                .filter(ex => ex.section === section)
+                .map(ex => renderExerciseCard(ex))
+                .join('');
+        }
+
+        function renderExerciseCard(exercise) {
+            const setsCompleted = state.setsCompleted[exercise.id] || [];
+            const currentWeight = state.weights[exercise.id] ?? exercise.defaultWeight;
+            const allSetsComplete = setsCompleted.filter(Boolean).length === exercise.sets;
+            const showProgression = exercise.targetWeight && currentWeight >= exercise.targetWeight;
+
+            return `
+                <div class="exercise-card ${allSetsComplete ? 'completed' : ''}" data-exercise="${exercise.id}">
+                    <div class="exercise-header">
+                        <div>
+                            <div class="exercise-title">
+                                ${exercise.name}
+                                ${showProgression ? '<span class="progression-badge">🎯 Target reached!</span>' : ''}
+                            </div>
+                            <div class="exercise-subtitle">${exercise.sets} sets × ${exercise.reps}</div>
+                        </div>
+                        ${exercise.defaultWeight > 0 ? `
+                            <div class="exercise-weight">
+                                <input type="number"
+                                    class="weight-input"
+                                    value="${currentWeight}"
+                                    onchange="updateWeight('${exercise.id}', this.value)"
+                                    aria-label="Weight in kg">
+                                <span class="weight-unit">kg</span>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    ${exerciseSvgs[exercise.id] ? `
+                        <div class="exercise-illustration">
+                            ${exerciseSvgs[exercise.id]}
+                        </div>
+                    ` : ''}
+
+                    <ul class="exercise-instructions">
+                        ${exercise.instructions.map(i => `<li>${i}</li>`).join('')}
+                    </ul>
+
+                    <div class="sets-container">
+                        ${Array.from({length: exercise.sets}, (_, i) => `
+                            <div class="set-box ${setsCompleted[i] ? 'completed' : ''}"
+                                 onclick="toggleSet('${exercise.id}', ${i}, ${exercise.restSeconds})"
+                                 aria-label="Set ${i + 1}">
+                                <span class="set-number">Set ${i + 1}</span>
+                                <span class="set-check">✓</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="rest-timer" id="rest-${exercise.id}">
+                        <div class="rest-timer-label">Rest Timer</div>
+                        <div class="rest-timer-display" id="rest-display-${exercise.id}">00:00</div>
+                        <button class="rest-timer-btn" onclick="skipRestTimer('${exercise.id}')">Skip Rest</button>
+                    </div>
+
+                    <div class="exercise-meta">
+                        <span class="meta-item">⏱️ ${exercise.restSeconds}s rest</span>
+                        ${exercise.notes ? `<span class="meta-item">📝 ${exercise.notes}</span>` : ''}
+                    </div>
+
+                    ${exercise.alternative ? `
+                        <div class="alt-exercise-note">
+                            <strong>Alternative:</strong> ${exercise.alternative}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // ========== EVENT HANDLERS ==========
+        function toggleSection(sectionId) {
+            state.collapsed[sectionId] = !state.collapsed[sectionId];
+            saveState();
+            render();
+        }
+
+        function toggleWarmUp(itemId) {
+            state.warmUp[itemId] = !state.warmUp[itemId];
+            saveState();
+            render();
+        }
+
+        function toggleCoolDown(itemId) {
+            state.coolDown[itemId] = !state.coolDown[itemId];
+            saveState();
+            render();
+        }
+
+        function toggleSet(exerciseId, setIndex, restSeconds) {
+            if (!state.setsCompleted[exerciseId]) {
+                state.setsCompleted[exerciseId] = [];
+            }
+
+            const wasCompleted = state.setsCompleted[exerciseId][setIndex];
+            state.setsCompleted[exerciseId][setIndex] = !wasCompleted;
+
+            // Start rest timer when completing a set (not when unchecking)
+            if (!wasCompleted) {
+                startRestTimer(exerciseId, restSeconds);
+            }
+
+            saveState();
+            render();
+        }
+
+        function updateWeight(exerciseId, value) {
+            state.weights[exerciseId] = parseFloat(value) || 0;
+            saveState();
+        }
+
+        function resetSection(sectionId) {
+            if (sectionId === 'warm-up') {
+                state.warmUp = {};
+            } else if (sectionId === 'cool-down') {
+                state.coolDown = {};
+            } else {
+                exercises
+                    .filter(ex => ex.section === sectionId)
+                    .forEach(ex => {
+                        state.setsCompleted[ex.id] = [];
+                    });
+            }
+            saveState();
+            render();
+        }
+
+        // ========== PROGRESS TRACKING ==========
+        function getSectionProgress(sectionId) {
+            if (sectionId === 'warm-up') {
+                const completed = Object.values(state.warmUp).filter(Boolean).length;
+                return { completed, total: warmUpItems.length };
+            } else if (sectionId === 'cool-down') {
+                const completed = Object.values(state.coolDown).filter(Boolean).length;
+                return { completed, total: coolDownItems.length };
+            } else {
+                const sectionExercises = exercises.filter(ex => ex.section === sectionId);
+                let completed = 0;
+                let total = 0;
+                sectionExercises.forEach(ex => {
+                    total += ex.sets;
+                    completed += (state.setsCompleted[ex.id] || []).filter(Boolean).length;
+                });
+                return { completed, total };
+            }
+        }
+
+        function updateNextExercise() {
+            const nextEl = document.getElementById('nextExercise');
+            const nameEl = document.getElementById('nextExerciseName');
+
+            // Find first incomplete item
+            // Check warm-up
+            for (const item of warmUpItems) {
+                if (!state.warmUp[item.id]) {
+                    nextEl.classList.add('visible');
+                    nameEl.textContent = item.name;
+                    return;
+                }
+            }
+
+            // Check exercises
+            for (const ex of exercises) {
+                const completed = state.setsCompleted[ex.id] || [];
+                if (completed.filter(Boolean).length < ex.sets) {
+                    nextEl.classList.add('visible');
+                    const setsLeft = ex.sets - completed.filter(Boolean).length;
+                    nameEl.textContent = `${ex.name} (${setsLeft} sets left)`;
+                    return;
+                }
+            }
+
+            // Check cool-down
+            for (const item of coolDownItems) {
+                if (!state.coolDown[item.id]) {
+                    nextEl.classList.add('visible');
+                    nameEl.textContent = item.name;
+                    return;
+                }
+            }
+
+            // All done!
+            nextEl.classList.remove('visible');
+        }
+
+        function scrollToNextExercise() {
+            // Find and scroll to first incomplete item
+            for (const item of warmUpItems) {
+                if (!state.warmUp[item.id]) {
+                    state.collapsed['warm-up'] = false;
+                    saveState();
+                    render();
+                    document.querySelector('[data-section="warm-up"]')?.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            for (const ex of exercises) {
+                const completed = state.setsCompleted[ex.id] || [];
+                if (completed.filter(Boolean).length < ex.sets) {
+                    state.collapsed[ex.section] = false;
+                    saveState();
+                    render();
+                    document.querySelector(`[data-exercise="${ex.id}"]`)?.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+
+            for (const item of coolDownItems) {
+                if (!state.coolDown[item.id]) {
+                    state.collapsed['cool-down'] = false;
+                    saveState();
+                    render();
+                    document.querySelector('[data-section="cool-down"]')?.scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+            }
+        }
+
+        // ========== INITIALIZATION ==========
+        loadState();
+        render();
+
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('SW registered'))
+                .catch(err => console.log('SW registration failed:', err));
+        }
+    </script>
+</body>
+</html>
