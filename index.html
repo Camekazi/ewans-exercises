@@ -2,192 +2,471 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#B91C1C">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, maximum-scale=1.0">
+    <meta name="theme-color" content="#B45309">
     <title>Ewan's Strength Training</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.svg">
+    <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Ewan's Training">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #111827;
-            --bg-secondary: #1F2937;
-            --bg-card: #374151;
-            --text-primary: #F9FAFB;
-            --text-secondary: #9CA3AF;
-            --text-muted: #6B7280;
-            --accent-red: #B91C1C;
-            --accent-red-light: #DC2626;
-            --accent-emerald: #059669;
-            --accent-emerald-light: #10B981;
-            --accent-blue: #2563EB;
-            --accent-orange: #D97706;
-            --accent-purple: #7C3AED;
-            --border-color: #4B5563;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-            --radius: 12px;
-            --safe-top: env(safe-area-inset-top);
-            --safe-bottom: env(safe-area-inset-bottom);
-        }
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --amber: #B45309;
+            --amber-deep: #92400E;
+            --slate: #475569;
+            --slate-deep: #334155;
+            --steel: #64748B;
+            --cream: #FFFBEB;
+            --warm-white: #FEFCE8;
+            --charcoal: #1E293B;
+            --soft-shadow: rgba(180, 83, 9, 0.15);
+            --warmup-color: #0891B2;
+            --lower-color: #B45309;
+            --upper-color: #059669;
+            --cooldown-color: #7C3AED;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.25; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            padding: var(--safe-top) 16px var(--safe-bottom);
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.7;
+            color: var(--charcoal);
+            background: linear-gradient(165deg, #FFFBEB 0%, #FEF3C7 50%, #FDE68A 100%);
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-overflow-scrolling: touch;
+            -webkit-text-size-adjust: 100%;
         }
 
-        header {
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(180, 83, 9, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: breathe 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -20%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(71, 85, 105, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: breathe 10s ease-in-out infinite 2s;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 100%;
+            margin: 0 auto;
+            background: var(--warm-white);
+            border-radius: 30px;
+            padding: 30px 20px;
+            box-shadow: 0 25px 80px rgba(180, 83, 9, 0.15);
+            margin-bottom: 30px;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
             text-align: center;
-            padding: 24px 0 16px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
-        }
-
-        header h1 {
-            font-size: 1.75rem;
+            background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            font-size: 2.5em;
             font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
         }
 
-        .session-timer {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
+        .subtitle {
+            text-align: center;
+            color: var(--slate-deep);
+            margin-bottom: 35px;
+            font-style: italic;
+            font-size: 1.1em;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: linear-gradient(135deg, var(--amber) 0%, var(--amber-deep) 100%);
+            padding: 25px;
+            border-radius: 25px;
+            margin-bottom: 35px;
+            text-align: center;
+            box-shadow: 0 10px 40px var(--soft-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .progress-section > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .progress-section h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--warm-white);
+            letter-spacing: 0.5px;
+        }
+
+        .progress-bar-container {
+            background: rgba(255, 255, 255, 0.3);
+            height: 40px;
+            border-radius: 25px;
+            overflow: hidden;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--warm-white) 0%, #FFF 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--amber-deep);
+            font-weight: 700;
+            font-size: 1em;
+            box-shadow: 0 2px 15px rgba(255, 255, 255, 0.5);
+        }
+
+        #progressText {
+            font-size: 1em;
+            margin-bottom: 15px;
+            color: var(--warm-white);
+            font-weight: 400;
+        }
+
+        .session-timer-display {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--warm-white);
             font-variant-numeric: tabular-nums;
-        }
-
-        .session-timer.active {
-            color: var(--accent-emerald-light);
+            margin: 10px 0;
         }
 
         .timer-controls {
-            margin-top: 12px;
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: center;
+            margin-top: 15px;
         }
 
         .timer-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--warm-white);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 12px 28px;
+            border-radius: 25px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            backdrop-filter: blur(10px);
+            min-height: 44px;
         }
 
-        .timer-btn.start {
-            background: var(--accent-emerald);
+        .timer-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .timer-btn:active {
+            transform: translateY(0);
+        }
+
+        .timer-btn.active {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .reset-progress-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--warm-white);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .reset-progress-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* Training Principles */
+        .training-principles {
+            background: linear-gradient(135deg, var(--slate) 0%, var(--slate-deep) 100%);
             color: white;
-        }
-
-        .timer-btn.stop {
-            background: var(--accent-red);
-            color: white;
-        }
-
-        .timer-btn.reset {
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
-
-        .section {
-            margin-bottom: 20px;
-            border-radius: var(--radius);
+            padding: 30px 25px;
+            border-radius: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 50px rgba(71, 85, 105, 0.25);
+            position: relative;
             overflow: hidden;
-            background: var(--bg-secondary);
-            box-shadow: var(--shadow);
         }
+
+        .training-principles::before {
+            content: '🏋️';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 80px;
+            opacity: 0.1;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .training-principles h2 {
+            font-family: 'Cormorant Garamond', serif;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .principle-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .principle-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .principle-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .principle-card ul {
+            list-style: none;
+            padding-left: 0;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        .principle-card li {
+            padding: 5px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .principle-card li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            font-weight: 600;
+        }
+
+        /* Section Wrappers */
+        .section-wrapper {
+            margin: 40px 0;
+            animation: slideUp 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .section-wrapper:nth-child(1) { animation-delay: 0.1s; }
+        .section-wrapper:nth-child(2) { animation-delay: 0.2s; }
+        .section-wrapper:nth-child(3) { animation-delay: 0.3s; }
+        .section-wrapper:nth-child(4) { animation-delay: 0.4s; }
 
         .section-header {
+            padding: 20px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.2s;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3);
+            touch-action: manipulation;
         }
 
-        .section-header:hover {
-            background: var(--bg-card);
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-header:hover::before {
+            opacity: 1;
+        }
+
+        .section-header:active {
+            transform: scale(0.98);
+        }
+
+        .section-header.warmup {
+            background: linear-gradient(135deg, var(--warmup-color), #0E7490);
+            color: white;
+        }
+        .section-header.lower {
+            background: linear-gradient(135deg, var(--lower-color), var(--amber-deep));
+            color: white;
+        }
+        .section-header.upper {
+            background: linear-gradient(135deg, var(--upper-color), #047857);
+            color: white;
+        }
+        .section-header.cooldown {
+            background: linear-gradient(135deg, var(--cooldown-color), #6D28D9);
+            color: white;
         }
 
         .section-header h2 {
-            font-size: 1.1rem;
+            margin: 0;
+            font-size: 1.4em;
+            font-family: 'Cormorant Garamond', serif;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
         }
-
-        .section-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        .section.warm-up .section-icon { background: var(--accent-blue); }
-        .section.lower-body .section-icon { background: var(--accent-red); }
-        .section.upper-body .section-icon { background: var(--accent-orange); }
-        .section.cool-down .section-icon { background: var(--accent-purple); }
 
         .section-meta {
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
+            z-index: 1;
         }
 
         .section-progress {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+            font-size: 0.9em;
+            opacity: 0.9;
         }
 
-        .section-progress.complete {
-            color: var(--accent-emerald-light);
+        .toggle-icon {
+            font-size: 1.3em;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .chevron {
-            width: 20px;
-            height: 20px;
-            transition: transform 0.3s ease;
-            color: var(--text-muted);
-        }
-
-        .section.collapsed .chevron {
+        .toggle-icon.collapsed {
             transform: rotate(-90deg);
         }
 
         .section-content {
-            max-height: 2000px;
+            max-height: 10000px;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            opacity: 1;
         }
 
-        .section.collapsed .section-content {
+        .section-content.collapsed {
             max-height: 0;
+            opacity: 0;
         }
 
+        /* Exercise Cards */
         .exercise-card {
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-            background: var(--bg-secondary);
+            background: var(--warm-white);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(180, 83, 9, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
         }
 
         .exercise-card.completed {
@@ -198,47 +477,67 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .exercise-number {
+            display: inline-block;
+            background: var(--amber);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 10px;
         }
 
         .exercise-title {
-            font-size: 1rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3em;
             font-weight: 600;
-            color: var(--text-primary);
+            color: var(--charcoal);
         }
 
         .exercise-subtitle {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
+            font-size: 0.85em;
+            color: var(--slate);
+            margin-top: 4px;
         }
 
-        .exercise-weight {
+        .weight-input-container {
             display: flex;
             align-items: center;
             gap: 8px;
+            background: rgba(180, 83, 9, 0.1);
+            padding: 8px 12px;
+            border-radius: 12px;
         }
 
         .weight-input {
-            width: 60px;
+            width: 55px;
             padding: 6px 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            font-size: 0.9rem;
+            border: 1px solid rgba(180, 83, 9, 0.3);
+            border-radius: 8px;
+            background: white;
+            color: var(--charcoal);
+            font-size: 1em;
             text-align: center;
+            font-weight: 600;
         }
 
         .weight-unit {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+            font-size: 0.9em;
+            color: var(--slate);
+            font-weight: 500;
         }
 
         .exercise-illustration {
             width: 100%;
-            max-width: 200px;
-            margin: 12px auto;
+            max-width: 180px;
+            margin: 15px auto;
             display: block;
         }
 
@@ -248,57 +547,73 @@
         }
 
         .exercise-instructions {
-            margin-bottom: 16px;
+            margin: 15px 0;
+            padding-left: 0;
+            list-style: none;
         }
 
         .exercise-instructions li {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            margin-left: 20px;
+            font-size: 0.9em;
+            color: var(--slate);
+            margin-bottom: 8px;
+            padding-left: 24px;
+            position: relative;
+            line-height: 1.5;
         }
 
+        .exercise-instructions li:before {
+            content: "•";
+            position: absolute;
+            left: 8px;
+            color: var(--amber);
+            font-weight: bold;
+        }
+
+        /* Sets Container */
         .sets-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin: 20px 0;
         }
 
         .set-box {
-            width: 48px;
-            height: 48px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
+            width: 60px;
+            height: 60px;
+            border: 2px solid rgba(180, 83, 9, 0.3);
+            border-radius: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
-            background: var(--bg-card);
+            transition: all 0.3s ease;
+            background: white;
         }
 
         .set-box:hover {
-            border-color: var(--text-muted);
+            border-color: var(--amber);
+            transform: scale(1.05);
         }
 
         .set-box.completed {
-            background: var(--accent-emerald);
-            border-color: var(--accent-emerald);
+            background: linear-gradient(135deg, var(--upper-color), #047857);
+            border-color: var(--upper-color);
+            color: white;
         }
 
-        .set-box .set-number {
-            font-size: 0.7rem;
-            color: var(--text-muted);
+        .set-box .set-label {
+            font-size: 0.7em;
+            color: var(--slate);
+            margin-bottom: 2px;
         }
 
-        .set-box.completed .set-number {
-            color: rgba(255,255,255,0.8);
+        .set-box.completed .set-label {
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .set-box .set-check {
-            font-size: 1.2rem;
+            font-size: 1.4em;
             opacity: 0;
         }
 
@@ -306,88 +621,136 @@
             opacity: 1;
         }
 
-        .exercise-meta {
-            display: flex;
-            gap: 16px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            flex-wrap: wrap;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
+        /* Rest Timer */
         .rest-timer {
-            margin-top: 12px;
-            padding: 12px;
-            background: var(--bg-card);
-            border-radius: 8px;
+            margin-top: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--slate), var(--slate-deep));
+            border-radius: 15px;
             text-align: center;
             display: none;
+            color: white;
         }
 
         .rest-timer.active {
             display: block;
         }
 
+        .rest-timer-label {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
         .rest-timer-display {
-            font-size: 2rem;
+            font-size: 2.5em;
             font-weight: 700;
             font-variant-numeric: tabular-nums;
-            color: var(--accent-emerald-light);
         }
 
-        .rest-timer-label {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
+        .skip-rest-btn {
+            margin-top: 10px;
+            padding: 8px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .rest-timer-btn {
-            margin-top: 8px;
-            padding: 6px 16px;
-            border: none;
-            border-radius: 6px;
-            background: var(--border-color);
-            color: var(--text-primary);
-            font-size: 0.85rem;
+        .skip-rest-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Exercise Meta */
+        .exercise-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85em;
+            color: var(--slate);
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .alt-exercise {
+            font-size: 0.85em;
+            color: var(--amber-deep);
+            background: rgba(180, 83, 9, 0.1);
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border-left: 3px solid var(--amber);
+        }
+
+        .progression-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, var(--upper-color), #047857);
+            color: white;
+            font-size: 0.75em;
+            font-weight: 600;
+            border-radius: 20px;
+            margin-left: 10px;
+        }
+
+        /* Warm-up / Cool-down Items */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 20px;
+            background: var(--warm-white);
+            border-radius: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
-        .warm-up-item, .cool-down-item {
-            padding: 12px 16px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .checklist-item:hover {
+            transform: translateX(5px);
+        }
+
+        .checklist-item.checked {
+            opacity: 0.6;
         }
 
         .item-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            border: 2px solid rgba(180, 83, 9, 0.4);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             flex-shrink: 0;
+            background: white;
         }
 
         .item-checkbox.checked {
-            background: var(--accent-emerald);
-            border-color: var(--accent-emerald);
+            background: linear-gradient(135deg, var(--upper-color), #047857);
+            border-color: var(--upper-color);
         }
 
         .item-checkbox svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             opacity: 0;
             color: white;
+            stroke-width: 3;
         }
 
         .item-checkbox.checked svg {
@@ -399,129 +762,144 @@
         }
 
         .item-title {
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--charcoal);
         }
 
         .item-duration {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+            font-size: 0.85em;
+            color: var(--slate);
+            margin-top: 3px;
         }
 
-        .next-exercise {
-            position: fixed;
-            bottom: calc(20px + var(--safe-bottom));
-            left: 16px;
-            right: 16px;
-            background: var(--accent-red);
-            color: white;
-            padding: 16px;
-            border-radius: var(--radius);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            display: none;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .next-exercise:active {
-            transform: scale(0.98);
-        }
-
-        .next-exercise.visible {
-            display: block;
-        }
-
-        .next-exercise-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-            margin-bottom: 4px;
-        }
-
-        .next-exercise-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-        }
-
-        .reset-section {
-            padding: 12px 16px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .reset-btn {
+        /* Reset Button */
+        .reset-section-btn {
             width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
             background: transparent;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
+            color: var(--slate);
+            font-size: 0.9em;
             cursor: pointer;
             transition: all 0.2s;
+            margin-top: 10px;
         }
 
-        .reset-btn:hover {
-            background: var(--bg-card);
-            color: var(--text-primary);
+        .reset-section-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--charcoal);
         }
 
-        .alt-exercise-note {
-            font-size: 0.8rem;
-            color: var(--accent-orange);
-            font-style: italic;
-            margin-top: 8px;
-            padding: 8px;
-            background: rgba(217, 119, 6, 0.1);
-            border-radius: 6px;
-        }
-
-        .progression-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 8px;
-            background: var(--accent-emerald);
+        /* Floating Action Button */
+        .next-exercise-fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--amber), var(--amber-deep));
             color: white;
-            font-size: 0.7rem;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(180, 83, 9, 0.4);
+            z-index: 1000;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .next-exercise-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(180, 83, 9, 0.5);
+        }
+
+        .next-exercise-fab:active {
+            transform: scale(0.95);
+        }
+
+        .next-exercise-fab.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .fab-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+        }
+
+        .fab-text {
+            font-size: 0.4em;
             font-weight: 600;
-            border-radius: 4px;
-            margin-left: 8px;
+            margin-top: 2px;
         }
 
-        footer {
-            text-align: center;
-            padding: 40px 0 20px;
-            color: var(--text-muted);
-            font-size: 0.8rem;
+        /* Quick Workout Flow */
+        .workout-flow {
+            background: var(--warm-white);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
         }
 
-        /* Reduce motion */
+        .workout-flow h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: var(--charcoal);
+        }
+
+        .workout-flow ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .workout-flow li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 0.9em;
+            color: var(--slate);
+        }
+
+        .workout-flow li:last-child {
+            border-bottom: none;
+        }
+
+        .workout-flow strong {
+            color: var(--amber);
+        }
+
+        /* Responsive */
+        @media (min-width: 500px) {
+            .principles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             * {
+                animation: none !important;
                 transition: none !important;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Ewan's Strength Training</h1>
-        <div class="session-timer" id="sessionTimer">Session: 00:00</div>
-        <div class="timer-controls">
-            <button class="timer-btn start" id="startTimer" onclick="toggleSessionTimer()">Start</button>
-            <button class="timer-btn reset" onclick="resetSessionTimer()">Reset</button>
+    <div class="container" id="app"></div>
+
+    <button class="next-exercise-fab hidden" id="nextFab" onclick="scrollToNextExercise()" aria-label="Go to next exercise">
+        <div class="fab-icon">
+            <span>↓</span>
+            <span class="fab-text">Next</span>
         </div>
-    </header>
-
-    <main id="app"></main>
-
-    <div class="next-exercise" id="nextExercise" onclick="scrollToNextExercise()">
-        <div class="next-exercise-label">Next up</div>
-        <div class="next-exercise-name" id="nextExerciseName"></div>
-    </div>
-
-    <footer>
-        <p>Built with gains in mind</p>
-    </footer>
+    </button>
 
     <script>
         // ========== DATA ==========
@@ -535,7 +913,7 @@
             {
                 id: 'deadlift',
                 name: 'Barbell Back Lifts (Deadlifts)',
-                section: 'lower-body',
+                section: 'lower',
                 sets: 4,
                 reps: '8-12',
                 defaultWeight: 50,
@@ -554,7 +932,7 @@
             {
                 id: 'reverse-lunge',
                 name: 'Reverse Lunges',
-                section: 'lower-body',
+                section: 'lower',
                 sets: 4,
                 reps: '8-12 per leg',
                 defaultWeight: 20,
@@ -566,12 +944,12 @@
                     'Push through front heel to return',
                     'Alternate legs'
                 ],
-                notes: '2 x 10kg dumbbells'
+                notes: '2 × 10kg dumbbells'
             },
             {
                 id: 'step-up',
                 name: 'Step Ups (Deadleg)',
-                section: 'lower-body',
+                section: 'lower',
                 sets: 4,
                 reps: '8-12 per leg',
                 defaultWeight: 20,
@@ -583,13 +961,13 @@
                     'Control descent, tap floor with back foot',
                     'Complete all reps on one leg before switching'
                 ],
-                notes: '2 x 10kg dumbbells',
+                notes: '2 × 10kg dumbbells',
                 alternative: 'Low Box Explosive Step Ups: Bodyweight, focus on speed and explosive arm drive'
             },
             {
                 id: 'pushup',
                 name: 'Push-ups',
-                section: 'upper-body',
+                section: 'upper',
                 sets: 3,
                 reps: '8-12',
                 defaultWeight: 0,
@@ -600,7 +978,7 @@
                     'Lower chest to floor, elbows at 45°',
                     'Push back up to full extension'
                 ],
-                alternative: 'Kettlebell Rows: 30kg, 3 x 8-12 per side'
+                alternative: 'Kettlebell Rows: 30kg, 3 × 8-12 per side'
             }
         ];
 
@@ -616,9 +994,8 @@
             weights: {},
             coolDown: {},
             collapsed: {},
-            sessionStart: null,
             sessionElapsed: 0,
-            activeRestTimer: null
+            timerRunning: false
         };
 
         let sessionTimerInterval = null;
@@ -626,69 +1003,58 @@
 
         // ========== SVG ICONS ==========
         const checkIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
-        const chevronIcon = `<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
 
         // ========== EXERCISE ILLUSTRATIONS ==========
         const exerciseSvgs = {
-            'deadlift': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <!-- Barbell -->
+            'deadlift': `<svg viewBox="0 0 200 150" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="40" y1="120" x2="160" y2="120"/>
-                <circle cx="45" cy="120" r="12"/>
-                <circle cx="155" cy="120" r="12"/>
-                <!-- Stickman - hinged position -->
-                <circle cx="100" cy="50" r="12"/> <!-- Head -->
-                <line x1="100" y1="62" x2="100" y2="90"/> <!-- Torso angled -->
-                <line x1="100" y1="90" x2="85" y2="115"/> <!-- Left leg -->
-                <line x1="100" y1="90" x2="115" y2="115"/> <!-- Right leg -->
-                <line x1="100" y1="70" x2="80" y2="100"/> <!-- Left arm to bar -->
-                <line x1="100" y1="70" x2="120" y2="100"/> <!-- Right arm to bar -->
+                <circle cx="50" cy="120" r="15" fill="none"/>
+                <circle cx="150" cy="120" r="15" fill="none"/>
+                <circle cx="100" cy="45" r="14"/>
+                <line x1="100" y1="59" x2="100" y2="88"/>
+                <line x1="100" y1="88" x2="80" y2="118"/>
+                <line x1="100" y1="88" x2="120" y2="118"/>
+                <line x1="100" y1="68" x2="75" y2="105"/>
+                <line x1="100" y1="68" x2="125" y2="105"/>
             </svg>`,
-            'reverse-lunge': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <!-- Stickman in lunge -->
-                <circle cx="100" cy="30" r="12"/> <!-- Head -->
-                <line x1="100" y1="42" x2="100" y2="80"/> <!-- Torso -->
-                <line x1="100" y1="80" x2="80" y2="120"/> <!-- Front leg -->
-                <line x1="100" y1="80" x2="130" y2="130"/> <!-- Back leg -->
-                <line x1="130" y1="130" x2="130" y2="140"/> <!-- Back knee down -->
-                <!-- Dumbbells -->
-                <line x1="100" y1="55" x2="75" y2="80"/> <!-- Left arm -->
-                <line x1="100" y1="55" x2="125" y2="80"/> <!-- Right arm -->
-                <rect x="70" y="75" width="10" height="20" rx="2"/>
-                <rect x="120" y="75" width="10" height="20" rx="2"/>
+            'reverse-lunge': `<svg viewBox="0 0 200 150" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="100" cy="28" r="14"/>
+                <line x1="100" y1="42" x2="100" y2="80"/>
+                <line x1="100" y1="80" x2="75" y2="125"/>
+                <line x1="100" y1="80" x2="135" y2="130"/>
+                <line x1="135" y1="130" x2="135" y2="142"/>
+                <line x1="100" y1="55" x2="70" y2="85"/>
+                <line x1="100" y1="55" x2="130" y2="85"/>
+                <rect x="63" y="80" width="12" height="22" rx="3"/>
+                <rect x="123" y="80" width="12" height="22" rx="3"/>
             </svg>`,
-            'step-up': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <!-- Box -->
-                <rect x="80" y="100" width="60" height="40" rx="4"/>
-                <!-- Stickman stepping up -->
-                <circle cx="110" cy="40" r="12"/> <!-- Head -->
-                <line x1="110" y1="52" x2="110" y2="85"/> <!-- Torso -->
-                <line x1="110" y1="85" x2="110" y2="100"/> <!-- Front leg on box -->
-                <line x1="110" y1="85" x2="90" y2="140"/> <!-- Back leg -->
-                <!-- Dumbbells -->
-                <line x1="110" y1="60" x2="90" y2="85"/>
-                <line x1="110" y1="60" x2="130" y2="85"/>
-                <rect x="85" y="80" width="8" height="16" rx="2"/>
-                <rect x="127" y="80" width="8" height="16" rx="2"/>
+            'step-up': `<svg viewBox="0 0 200 150" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="75" y="95" width="70" height="45" rx="5"/>
+                <circle cx="110" cy="35" r="14"/>
+                <line x1="110" y1="49" x2="110" y2="82"/>
+                <line x1="110" y1="82" x2="110" y2="95"/>
+                <line x1="110" y1="82" x2="85" y2="140"/>
+                <line x1="110" y1="58" x2="85" y2="85"/>
+                <line x1="110" y1="58" x2="135" y2="85"/>
+                <rect x="78" y="80" width="10" height="18" rx="2"/>
+                <rect x="128" y="80" width="10" height="18" rx="2"/>
             </svg>`,
-            'pushup': `<svg viewBox="0 0 200 150" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <!-- Stickman in pushup position -->
-                <circle cx="50" cy="70" r="12"/> <!-- Head -->
-                <line x1="62" y1="70" x2="150" y2="80"/> <!-- Torso horizontal -->
-                <line x1="150" y1="80" x2="170" y2="120"/> <!-- Legs -->
-                <line x1="70" y1="75" x2="70" y2="120"/> <!-- Left arm down -->
-                <line x1="100" y1="78" x2="100" y2="120"/> <!-- Right arm down -->
-                <!-- Ground -->
-                <line x1="30" y1="120" x2="180" y2="120"/>
+            'pushup': `<svg viewBox="0 0 200 150" fill="none" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="45" cy="68" r="14"/>
+                <line x1="59" y1="68" x2="155" y2="78"/>
+                <line x1="155" y1="78" x2="175" y2="118"/>
+                <line x1="68" y1="73" x2="68" y2="118"/>
+                <line x1="105" y1="76" x2="105" y2="118"/>
+                <line x1="25" y1="118" x2="185" y2="118"/>
             </svg>`
         };
 
         // ========== PERSISTENCE ==========
         function loadState() {
             try {
-                const saved = localStorage.getItem('ewans-exercises-state');
+                const saved = localStorage.getItem('ewans-exercises-state-v2');
                 if (saved) {
-                    const parsed = JSON.parse(saved);
-                    state = { ...state, ...parsed };
+                    state = { ...state, ...JSON.parse(saved) };
                 }
             } catch (e) {
                 console.warn('Could not load state:', e);
@@ -700,84 +1066,62 @@
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
                 try {
-                    localStorage.setItem('ewans-exercises-state', JSON.stringify(state));
+                    localStorage.setItem('ewans-exercises-state-v2', JSON.stringify(state));
                 } catch (e) {
                     console.warn('Could not save state:', e);
                 }
             }, 300);
         }
 
-        // ========== SESSION TIMER ==========
+        // ========== TIMER FUNCTIONS ==========
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        function updateSessionTimerDisplay() {
-            const display = document.getElementById('sessionTimer');
-            display.textContent = `Session: ${formatTime(state.sessionElapsed)}`;
-        }
-
         function toggleSessionTimer() {
-            const btn = document.getElementById('startTimer');
-            const display = document.getElementById('sessionTimer');
-
-            if (sessionTimerInterval) {
+            if (state.timerRunning) {
                 clearInterval(sessionTimerInterval);
-                sessionTimerInterval = null;
-                btn.textContent = 'Resume';
-                btn.className = 'timer-btn start';
-                display.classList.remove('active');
+                state.timerRunning = false;
             } else {
-                if (!state.sessionStart) {
-                    state.sessionStart = Date.now();
-                }
+                state.timerRunning = true;
                 sessionTimerInterval = setInterval(() => {
                     state.sessionElapsed++;
-                    updateSessionTimerDisplay();
+                    document.getElementById('sessionTimerDisplay').textContent = formatTime(state.sessionElapsed);
                     saveState();
                 }, 1000);
-                btn.textContent = 'Pause';
-                btn.className = 'timer-btn stop';
-                display.classList.add('active');
             }
+            saveState();
+            render();
         }
 
         function resetSessionTimer() {
             clearInterval(sessionTimerInterval);
-            sessionTimerInterval = null;
-            state.sessionStart = null;
             state.sessionElapsed = 0;
-            updateSessionTimerDisplay();
-            const btn = document.getElementById('startTimer');
-            btn.textContent = 'Start';
-            btn.className = 'timer-btn start';
-            document.getElementById('sessionTimer').classList.remove('active');
+            state.timerRunning = false;
             saveState();
+            render();
         }
 
-        // ========== REST TIMER ==========
         function startRestTimer(exerciseId, seconds) {
             clearInterval(restTimerInterval);
-            state.activeRestTimer = { exerciseId, remaining: seconds };
 
             const timerEl = document.getElementById(`rest-${exerciseId}`);
             const displayEl = document.getElementById(`rest-display-${exerciseId}`);
 
             if (timerEl) {
                 timerEl.classList.add('active');
-                displayEl.textContent = formatTime(seconds);
+                let remaining = seconds;
+                displayEl.textContent = formatTime(remaining);
 
                 restTimerInterval = setInterval(() => {
-                    state.activeRestTimer.remaining--;
-                    displayEl.textContent = formatTime(state.activeRestTimer.remaining);
+                    remaining--;
+                    displayEl.textContent = formatTime(remaining);
 
-                    if (state.activeRestTimer.remaining <= 0) {
+                    if (remaining <= 0) {
                         clearInterval(restTimerInterval);
                         timerEl.classList.remove('active');
-                        state.activeRestTimer = null;
-                        // Vibrate if supported
                         if (navigator.vibrate) {
                             navigator.vibrate([200, 100, 200]);
                         }
@@ -789,55 +1133,144 @@
         function skipRestTimer(exerciseId) {
             clearInterval(restTimerInterval);
             const timerEl = document.getElementById(`rest-${exerciseId}`);
-            if (timerEl) {
-                timerEl.classList.remove('active');
+            if (timerEl) timerEl.classList.remove('active');
+        }
+
+        // ========== PROGRESS CALCULATION ==========
+        function getTotalProgress() {
+            let completed = 0;
+            let total = 0;
+
+            // Warm-up items
+            total += warmUpItems.length;
+            completed += Object.values(state.warmUp).filter(Boolean).length;
+
+            // Exercise sets
+            exercises.forEach(ex => {
+                total += ex.sets;
+                completed += (state.setsCompleted[ex.id] || []).filter(Boolean).length;
+            });
+
+            // Cool-down items
+            total += coolDownItems.length;
+            completed += Object.values(state.coolDown).filter(Boolean).length;
+
+            return { completed, total, percentage: Math.round((completed / total) * 100) };
+        }
+
+        function getSectionProgress(section) {
+            if (section === 'warmup') {
+                const completed = Object.values(state.warmUp).filter(Boolean).length;
+                return `${completed}/${warmUpItems.length}`;
+            } else if (section === 'cooldown') {
+                const completed = Object.values(state.coolDown).filter(Boolean).length;
+                return `${completed}/${coolDownItems.length}`;
+            } else {
+                const sectionExercises = exercises.filter(ex => ex.section === section);
+                let completed = 0;
+                let total = 0;
+                sectionExercises.forEach(ex => {
+                    total += ex.sets;
+                    completed += (state.setsCompleted[ex.id] || []).filter(Boolean).length;
+                });
+                return `${completed}/${total}`;
             }
-            state.activeRestTimer = null;
         }
 
         // ========== RENDERING ==========
         function render() {
+            const progress = getTotalProgress();
+            let exerciseNumber = 1;
+
             const app = document.getElementById('app');
             app.innerHTML = `
-                ${renderSection('warm-up', 'Warm-up', '10 min', renderWarmUp())}
-                ${renderSection('lower-body', 'Lower Body', '30 min', renderExercises('lower-body'))}
-                ${renderSection('upper-body', 'Upper Body Push', '10 min', renderExercises('upper-body'))}
-                ${renderSection('cool-down', 'Cool Down', '10 min', renderCoolDown())}
+                <h1>Ewan's Strength Training</h1>
+                <p class="subtitle">Build strength, build character</p>
+
+                <div class="progress-section">
+                    <h3>Today's Progress</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" style="width: ${progress.percentage}%">${progress.percentage > 10 ? progress.percentage + '%' : ''}</div>
+                    </div>
+                    <p id="progressText">${progress.completed} of ${progress.total} items completed</p>
+
+                    <div class="session-timer-display" id="sessionTimerDisplay">${formatTime(state.sessionElapsed)}</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn ${state.timerRunning ? 'active' : ''}" onclick="toggleSessionTimer()">
+                            ${state.timerRunning ? '⏸ Pause' : '▶ Start'}
+                        </button>
+                        <button class="timer-btn" onclick="resetSessionTimer()">↺ Reset</button>
+                    </div>
+                    <button class="reset-progress-btn" onclick="resetAllProgress()">Reset All Progress</button>
+                </div>
+
+                <div class="training-principles">
+                    <h2>💪 Training Principles</h2>
+                    <div class="principles-grid">
+                        <div class="principle-card">
+                            <h3>🎯 Progressive Overload</h3>
+                            <ul>
+                                <li>Increase weight when hitting 12 reps</li>
+                                <li>Add 2.5kg per progression</li>
+                                <li>Track weights consistently</li>
+                                <li>Quality reps over quantity</li>
+                            </ul>
+                        </div>
+                        <div class="principle-card">
+                            <h3>⏱️ Rest & Recovery</h3>
+                            <ul>
+                                <li>120s rest for heavy lifts</li>
+                                <li>90s rest for accessory work</li>
+                                <li>60s rest for push-ups</li>
+                                <li>Full recovery = better sets</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                ${renderSection('warmup', '🔥 Warm-up', '10 min', renderWarmUp())}
+                ${renderSection('lower', '🦵 Lower Body', '30 min', renderExercises('lower', exerciseNumber))}
+                ${renderSection('upper', '💪 Upper Body Push', '10 min', renderExercises('upper', 4))}
+                ${renderSection('cooldown', '🧘 Cool Down', '10 min', renderCoolDown())}
+
+                <div class="workout-flow">
+                    <h2>⚡ Quick Session Flow</h2>
+                    <ul>
+                        <li><strong>Warm-up:</strong> Cardio → Mobility → Dynamic Stretching</li>
+                        <li><strong>Lower:</strong> Deadlifts → Reverse Lunges → Step Ups</li>
+                        <li><strong>Upper:</strong> Push-ups or Kettlebell Rows</li>
+                        <li><strong>Cool:</strong> Light cardio → Static stretches</li>
+                    </ul>
+                </div>
             `;
-            updateNextExercise();
-            updateSessionTimerDisplay();
+
+            updateNextButton();
+
+            // Restore timer if it was running
+            if (state.timerRunning && !sessionTimerInterval) {
+                sessionTimerInterval = setInterval(() => {
+                    state.sessionElapsed++;
+                    const display = document.getElementById('sessionTimerDisplay');
+                    if (display) display.textContent = formatTime(state.sessionElapsed);
+                    saveState();
+                }, 1000);
+            }
         }
 
         function renderSection(id, title, duration, content) {
             const isCollapsed = state.collapsed[id];
-            const progress = getSectionProgress(id);
-            const progressClass = progress.completed === progress.total ? 'complete' : '';
-
-            const icons = {
-                'warm-up': '🔥',
-                'lower-body': '🦵',
-                'upper-body': '💪',
-                'cool-down': '🧘'
-            };
-
             return `
-                <div class="section ${id} ${isCollapsed ? 'collapsed' : ''}" data-section="${id}">
-                    <div class="section-header" onclick="toggleSection('${id}')">
-                        <h2>
-                            <span class="section-icon">${icons[id]}</span>
-                            ${title}
-                            <span style="font-weight: 400; font-size: 0.85rem; color: var(--text-secondary)">${duration}</span>
-                        </h2>
+                <div class="section-wrapper">
+                    <div class="section-header ${id}" onclick="toggleSection('${id}')">
+                        <h2>${title} <span style="font-weight: 300; font-size: 0.7em; opacity: 0.8">${duration}</span></h2>
                         <div class="section-meta">
-                            <span class="section-progress ${progressClass}">${progress.completed}/${progress.total}</span>
-                            ${chevronIcon}
+                            <span class="section-progress">${getSectionProgress(id)}</span>
+                            <span class="toggle-icon ${isCollapsed ? 'collapsed' : ''}">▼</span>
                         </div>
                     </div>
-                    <div class="section-content">
+                    <div class="section-content ${isCollapsed ? 'collapsed' : ''}">
                         ${content}
-                        <div class="reset-section">
-                            <button class="reset-btn" onclick="resetSection('${id}')">Reset ${title}</button>
-                        </div>
+                        <button class="reset-section-btn" onclick="resetSection('${id}')">Reset ${title.replace(/[^\w\s]/g, '').trim()}</button>
                     </div>
                 </div>
             `;
@@ -847,13 +1280,11 @@
             return warmUpItems.map(item => {
                 const isChecked = state.warmUp[item.id];
                 return `
-                    <div class="warm-up-item">
-                        <div class="item-checkbox ${isChecked ? 'checked' : ''}" onclick="toggleWarmUp('${item.id}')">
-                            ${checkIcon}
-                        </div>
+                    <div class="checklist-item ${isChecked ? 'checked' : ''}" onclick="toggleWarmUp('${item.id}')">
+                        <div class="item-checkbox ${isChecked ? 'checked' : ''}">${checkIcon}</div>
                         <div class="item-content">
                             <div class="item-title">${item.name}</div>
-                            <div class="item-duration">${item.duration} - ${item.notes}</div>
+                            <div class="item-duration">${item.duration} — ${item.notes}</div>
                         </div>
                     </div>
                 `;
@@ -864,27 +1295,26 @@
             return coolDownItems.map(item => {
                 const isChecked = state.coolDown[item.id];
                 return `
-                    <div class="cool-down-item">
-                        <div class="item-checkbox ${isChecked ? 'checked' : ''}" onclick="toggleCoolDown('${item.id}')">
-                            ${checkIcon}
-                        </div>
+                    <div class="checklist-item ${isChecked ? 'checked' : ''}" onclick="toggleCoolDown('${item.id}')">
+                        <div class="item-checkbox ${isChecked ? 'checked' : ''}">${checkIcon}</div>
                         <div class="item-content">
                             <div class="item-title">${item.name}</div>
-                            <div class="item-duration">${item.duration} - ${item.notes}</div>
+                            <div class="item-duration">${item.duration} — ${item.notes}</div>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function renderExercises(section) {
+        function renderExercises(section, startNumber) {
+            let num = startNumber;
             return exercises
                 .filter(ex => ex.section === section)
-                .map(ex => renderExerciseCard(ex))
+                .map(ex => renderExerciseCard(ex, num++))
                 .join('');
         }
 
-        function renderExerciseCard(exercise) {
+        function renderExerciseCard(exercise, number) {
             const setsCompleted = state.setsCompleted[exercise.id] || [];
             const currentWeight = state.weights[exercise.id] ?? exercise.defaultWeight;
             const allSetsComplete = setsCompleted.filter(Boolean).length === exercise.sets;
@@ -894,28 +1324,22 @@
                 <div class="exercise-card ${allSetsComplete ? 'completed' : ''}" data-exercise="${exercise.id}">
                     <div class="exercise-header">
                         <div>
-                            <div class="exercise-title">
-                                ${exercise.name}
-                                ${showProgression ? '<span class="progression-badge">🎯 Target reached!</span>' : ''}
-                            </div>
+                            <span class="exercise-number">${number}</span>
+                            <span class="exercise-title">${exercise.name}</span>
+                            ${showProgression ? '<span class="progression-badge">🎯 Target!</span>' : ''}
                             <div class="exercise-subtitle">${exercise.sets} sets × ${exercise.reps}</div>
                         </div>
                         ${exercise.defaultWeight > 0 ? `
-                            <div class="exercise-weight">
-                                <input type="number"
-                                    class="weight-input"
-                                    value="${currentWeight}"
-                                    onchange="updateWeight('${exercise.id}', this.value)"
-                                    aria-label="Weight in kg">
+                            <div class="weight-input-container">
+                                <input type="number" class="weight-input" value="${currentWeight}"
+                                    onchange="updateWeight('${exercise.id}', this.value)" aria-label="Weight in kg">
                                 <span class="weight-unit">kg</span>
                             </div>
                         ` : ''}
                     </div>
 
                     ${exerciseSvgs[exercise.id] ? `
-                        <div class="exercise-illustration">
-                            ${exerciseSvgs[exercise.id]}
-                        </div>
+                        <div class="exercise-illustration">${exerciseSvgs[exercise.id]}</div>
                     ` : ''}
 
                     <ul class="exercise-instructions">
@@ -925,9 +1349,8 @@
                     <div class="sets-container">
                         ${Array.from({length: exercise.sets}, (_, i) => `
                             <div class="set-box ${setsCompleted[i] ? 'completed' : ''}"
-                                 onclick="toggleSet('${exercise.id}', ${i}, ${exercise.restSeconds})"
-                                 aria-label="Set ${i + 1}">
-                                <span class="set-number">Set ${i + 1}</span>
+                                 onclick="toggleSet('${exercise.id}', ${i}, ${exercise.restSeconds})">
+                                <span class="set-label">Set ${i + 1}</span>
                                 <span class="set-check">✓</span>
                             </div>
                         `).join('')}
@@ -936,7 +1359,7 @@
                     <div class="rest-timer" id="rest-${exercise.id}">
                         <div class="rest-timer-label">Rest Timer</div>
                         <div class="rest-timer-display" id="rest-display-${exercise.id}">00:00</div>
-                        <button class="rest-timer-btn" onclick="skipRestTimer('${exercise.id}')">Skip Rest</button>
+                        <button class="skip-rest-btn" onclick="skipRestTimer('${exercise.id}')">Skip Rest</button>
                     </div>
 
                     <div class="exercise-meta">
@@ -945,9 +1368,7 @@
                     </div>
 
                     ${exercise.alternative ? `
-                        <div class="alt-exercise-note">
-                            <strong>Alternative:</strong> ${exercise.alternative}
-                        </div>
+                        <div class="alt-exercise"><strong>Alternative:</strong> ${exercise.alternative}</div>
                     ` : ''}
                 </div>
             `;
@@ -980,7 +1401,6 @@
             const wasCompleted = state.setsCompleted[exerciseId][setIndex];
             state.setsCompleted[exerciseId][setIndex] = !wasCompleted;
 
-            // Start rest timer when completing a set (not when unchecking)
             if (!wasCompleted) {
                 startRestTimer(exerciseId, restSeconds);
             }
@@ -995,108 +1415,82 @@
         }
 
         function resetSection(sectionId) {
-            if (sectionId === 'warm-up') {
+            if (sectionId === 'warmup') {
                 state.warmUp = {};
-            } else if (sectionId === 'cool-down') {
+            } else if (sectionId === 'cooldown') {
                 state.coolDown = {};
             } else {
-                exercises
-                    .filter(ex => ex.section === sectionId)
-                    .forEach(ex => {
-                        state.setsCompleted[ex.id] = [];
-                    });
+                exercises.filter(ex => ex.section === sectionId).forEach(ex => {
+                    state.setsCompleted[ex.id] = [];
+                });
             }
             saveState();
             render();
         }
 
-        // ========== PROGRESS TRACKING ==========
-        function getSectionProgress(sectionId) {
-            if (sectionId === 'warm-up') {
-                const completed = Object.values(state.warmUp).filter(Boolean).length;
-                return { completed, total: warmUpItems.length };
-            } else if (sectionId === 'cool-down') {
-                const completed = Object.values(state.coolDown).filter(Boolean).length;
-                return { completed, total: coolDownItems.length };
-            } else {
-                const sectionExercises = exercises.filter(ex => ex.section === sectionId);
-                let completed = 0;
-                let total = 0;
-                sectionExercises.forEach(ex => {
-                    total += ex.sets;
-                    completed += (state.setsCompleted[ex.id] || []).filter(Boolean).length;
-                });
-                return { completed, total };
+        function resetAllProgress() {
+            if (confirm('Reset all progress for today?')) {
+                state.warmUp = {};
+                state.setsCompleted = {};
+                state.coolDown = {};
+                state.sessionElapsed = 0;
+                state.timerRunning = false;
+                clearInterval(sessionTimerInterval);
+                sessionTimerInterval = null;
+                saveState();
+                render();
             }
         }
 
-        function updateNextExercise() {
-            const nextEl = document.getElementById('nextExercise');
-            const nameEl = document.getElementById('nextExerciseName');
+        // ========== NEXT EXERCISE BUTTON ==========
+        function updateNextButton() {
+            const fab = document.getElementById('nextFab');
+            const hasIncomplete =
+                warmUpItems.some(item => !state.warmUp[item.id]) ||
+                exercises.some(ex => (state.setsCompleted[ex.id] || []).filter(Boolean).length < ex.sets) ||
+                coolDownItems.some(item => !state.coolDown[item.id]);
 
-            // Find first incomplete item
-            // Check warm-up
-            for (const item of warmUpItems) {
-                if (!state.warmUp[item.id]) {
-                    nextEl.classList.add('visible');
-                    nameEl.textContent = item.name;
-                    return;
-                }
+            if (hasIncomplete) {
+                fab.classList.remove('hidden');
+            } else {
+                fab.classList.add('hidden');
             }
-
-            // Check exercises
-            for (const ex of exercises) {
-                const completed = state.setsCompleted[ex.id] || [];
-                if (completed.filter(Boolean).length < ex.sets) {
-                    nextEl.classList.add('visible');
-                    const setsLeft = ex.sets - completed.filter(Boolean).length;
-                    nameEl.textContent = `${ex.name} (${setsLeft} sets left)`;
-                    return;
-                }
-            }
-
-            // Check cool-down
-            for (const item of coolDownItems) {
-                if (!state.coolDown[item.id]) {
-                    nextEl.classList.add('visible');
-                    nameEl.textContent = item.name;
-                    return;
-                }
-            }
-
-            // All done!
-            nextEl.classList.remove('visible');
         }
 
         function scrollToNextExercise() {
-            // Find and scroll to first incomplete item
+            // Find first incomplete and scroll to it
             for (const item of warmUpItems) {
                 if (!state.warmUp[item.id]) {
-                    state.collapsed['warm-up'] = false;
+                    state.collapsed['warmup'] = false;
                     saveState();
                     render();
-                    document.querySelector('[data-section="warm-up"]')?.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        document.querySelector('.section-header.warmup')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
                     return;
                 }
             }
 
             for (const ex of exercises) {
-                const completed = state.setsCompleted[ex.id] || [];
-                if (completed.filter(Boolean).length < ex.sets) {
+                if ((state.setsCompleted[ex.id] || []).filter(Boolean).length < ex.sets) {
                     state.collapsed[ex.section] = false;
                     saveState();
                     render();
-                    document.querySelector(`[data-exercise="${ex.id}"]`)?.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        document.querySelector(`[data-exercise="${ex.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
                     return;
                 }
             }
 
             for (const item of coolDownItems) {
                 if (!state.coolDown[item.id]) {
-                    state.collapsed['cool-down'] = false;
+                    state.collapsed['cooldown'] = false;
                     saveState();
                     render();
-                    document.querySelector('[data-section="cool-down"]')?.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        document.querySelector('.section-header.cooldown')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
                     return;
                 }
             }
