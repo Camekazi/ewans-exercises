@@ -1,10 +1,14 @@
-const CACHE_NAME = 'ewans-exercises-v2';
+const CACHE_NAME = 'ewans-exercises-v3';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icons/icon-192.svg',
-  './icons/icon-512.svg'
+  './icons/icon-512.svg',
+  './images/deadlift.png',
+  './images/reverse-lunge.png',
+  './images/step-up.png',
+  './images/pushup.png'
 ];
 
 // Install: cache all assets
